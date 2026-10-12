@@ -25,7 +25,7 @@ def summarise(findings: list[Finding]) -> str:
 
 
 def to_terminal(findings: list[Finding], source: str) -> str:
-    out = [f"\nwcag-triage  {source}", "=" * 72, summarise(findings), ""]
+    out = [f"\naccessibility-screening  {source}", "=" * 72, summarise(findings), ""]
     if not findings:
         out.append(
             "Note: these checks cannot see colour contrast or focus visibility.\n"

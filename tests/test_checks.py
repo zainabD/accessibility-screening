@@ -8,8 +8,8 @@ off.
 import pytest
 from bs4 import BeautifulSoup
 
-from wcag_triage import checks
-from wcag_triage.findings import Impact
+from accessibility_screening import checks
+from accessibility_screening.findings import Impact
 
 
 def soup(html):

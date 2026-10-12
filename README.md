@@ -1,4 +1,4 @@
-# wcag-triage
+# accessibility-screening
 
 Checks a web page against WCAG rules and sorts what it finds by how much each
 problem actually blocks someone.
@@ -19,15 +19,15 @@ python3 -m venv .venv
 
 ```bash
 # point it at a URL or a local file
-.venv/bin/python -m wcag_triage.cli https://example.com
-.venv/bin/python -m wcag_triage.cli build/index.html
+.venv/bin/python -m accessibility_screening.cli https://example.com
+.venv/bin/python -m accessibility_screening.cli build/index.html
 
 # ask Claude to write the fix for each finding
 export ANTHROPIC_API_KEY=sk-ant-...
-.venv/bin/python -m wcag_triage.cli https://example.com --explain
+.venv/bin/python -m accessibility_screening.cli https://example.com --explain
 
 # write a Markdown report, and fail the build on anything serious or worse
-.venv/bin/python -m wcag_triage.cli https://example.com \
+.venv/bin/python -m accessibility_screening.cli https://example.com \
     --markdown report.md --fail-on serious
 ```
 
