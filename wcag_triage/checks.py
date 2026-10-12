@@ -1,10 +1,9 @@
-"""Static WCAG checks against parsed HTML.
+"""The WCAG checks. Each one reads the parsed HTML.
 
-Every check here maps to a specific success criterion and only reports what can
-be determined from markup alone. Anything requiring rendering (colour contrast,
-focus visibility, reflow at 320px) is deliberately out of scope rather than
-guessed at: a confident wrong finding costs more reviewer trust than a missing
-one.
+Every check maps to a specific success criterion, and only reports things you
+can tell from the markup. Anything that needs the page actually rendered, like
+colour contrast or focus visibility, is left out on purpose. I would rather miss
+something than report a problem that is not there.
 """
 
 from __future__ import annotations
@@ -23,8 +22,8 @@ LABELS_OR_INSTRUCTIONS = Criterion("3.3.2", "Labels or Instructions", "A")
 NAME_ROLE_VALUE = Criterion("4.1.2", "Name, Role, Value", "A")
 FOCUS_ORDER = Criterion("2.4.3", "Focus Order", "A")
 
-# Link text that carries no meaning once a screen reader user pulls the page's
-# links out of context, which is exactly how many of them navigate.
+# Link text that means nothing once you pull the links out of the page, which
+# is how a lot of screen reader users move around.
 VAGUE_LINK_TEXT = {
     "click here", "here", "read more", "more", "learn more",
     "this link", "link", "details", "continue", "go",
@@ -40,10 +39,10 @@ def _snippet(tag, limit: int = 120) -> str:
 
 
 def _accessible_name(tag) -> str:
-    """Approximate the accessible name of an element.
+    """Work out roughly what this element would be announced as.
 
-    This is a simplification of the real accname algorithm: enough to catch a
-    control that has no name at all, which is the failure worth reporting.
+    Simpler than the real accname algorithm. Enough to catch a control with no
+    name at all, which is the case worth flagging.
     """
     for attr in ("aria-label", "title", "alt"):
         if tag.get(attr, "").strip():
@@ -333,7 +332,7 @@ def check_skip_link(soup: BeautifulSoup) -> list[Finding]:
     ]
 
 def check_data_table_headers(soup: BeautifulSoup) -> list[Finding]:
-    """1.3.1 - a data table needs th cells so rows and columns are announced."""
+    """1.3.1 - a data table needs th cells, or the rows and columns mean nothing."""
     bad = []
     for table in soup.find_all("table"):
         if table.get("role") in ("presentation", "none"):

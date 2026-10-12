@@ -1,8 +1,8 @@
-"""Optional Claude pass that turns findings into remediation guidance.
+"""Optional step that asks Claude to write the fix for each finding.
 
-The checks know *what* is wrong. This adds the part a reviewer actually needs:
-a concrete fix for this markup, and an order to work in. It is optional by
-design, so the tool still does something useful with no API key configured.
+The checks tell you what is wrong. This adds the part you actually need, which
+is what to change in the markup. It is optional, so the tool still works
+without an API key.
 """
 
 from __future__ import annotations

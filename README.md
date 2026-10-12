@@ -1,15 +1,12 @@
-# a11y-triage
+# wcag-triage
 
-Audit a web page for WCAG violations, then rank them by how badly they block a
-real user.
+Checks a web page against WCAG rules and sorts what it finds by how much each
+problem actually blocks someone.
 
-Most accessibility linters stop at detection and hand back a flat list of two
-hundred violations. That is the same failure mode as a vulnerability scanner
-that reports a missing security header at the same severity as an
-unauthenticated remote execution: technically complete, operationally useless.
-The hard question is not *what is wrong*, it is *what do I fix first*.
-
-`a11y-triage` answers the second one.
+I built this because every accessibility tool I used gave me a long flat list.
+Two hundred findings, all looking equally urgent, and no help deciding where to
+start. I spent years remediating findings from scanners at work, and the list
+was never the hard part. Working out what mattered first was.
 
 ## Install
 
@@ -21,62 +18,62 @@ python3 -m venv .venv
 ## Use
 
 ```bash
-# a URL or a local file
-.venv/bin/python -m a11y_triage.cli https://example.com
-.venv/bin/python -m a11y_triage.cli build/index.html
+# point it at a URL or a local file
+.venv/bin/python -m wcag_triage.cli https://example.com
+.venv/bin/python -m wcag_triage.cli build/index.html
 
-# add a concrete remediation per finding, via Claude
+# ask Claude to write the fix for each finding
 export ANTHROPIC_API_KEY=sk-ant-...
-.venv/bin/python -m a11y_triage.cli https://example.com --explain
+.venv/bin/python -m wcag_triage.cli https://example.com --explain
 
-# write a Markdown report, and fail a build on anything serious or worse
-.venv/bin/python -m a11y_triage.cli https://example.com \
+# write a Markdown report, and fail the build on anything serious or worse
+.venv/bin/python -m wcag_triage.cli https://example.com \
     --markdown report.md --fail-on serious
 ```
 
-Exit code is non-zero when a finding meets `--fail-on` (default `blocker`), so
-it drops straight into CI.
+The exit code is non-zero when something hits the `--fail-on` level, which
+defaults to `blocker`. That way it works in a CI pipeline.
 
-## How findings are ranked
+## How it sorts
 
-Impact is about user consequence, not how hard the fix is.
+The levels are about what the problem does to the person using the page, not
+how hard it is to fix.
 
-| Impact | Meaning |
+| Level | What it means |
 |---|---|
-| `BLOCKER` | someone relying on assistive technology cannot complete the task |
-| `SERIOUS` | the task is possible but significantly harder |
+| `BLOCKER` | someone using assistive technology cannot finish the task |
+| `SERIOUS` | they can finish it, but it is much harder |
 | `MODERATE` | confusing or inconsistent, still workable |
 | `MINOR` | polish |
 
-Within an impact level, more widespread issues rank first. One missing `alt` is
-a bug; forty is a process failure, and the remediation is a different
-conversation.
+Inside a level, the problems that show up most often come first. One missing
+`alt` is a bug. Forty of them is a process problem, and you fix that a different
+way.
 
 ## What it checks
 
-Ten checks, each mapped to a specific success criterion.
+Eleven checks across nine success criteria.
 
 | Criterion | Check |
 |---|---|
 | 1.1.1 Non-text Content | `img` with no `alt` attribute |
-| 1.3.1 Info and Relationships | heading level skips, missing `h1` |
-| 2.4.1 Bypass Blocks | no skip link ahead of navigation |
+| 1.3.1 Info and Relationships | heading levels skipped, missing `h1`, data table with no `th` |
+| 2.4.1 Bypass Blocks | no skip link before the navigation |
 | 2.4.2 Page Titled | missing or empty `title` |
 | 2.4.3 Focus Order | positive `tabindex` |
 | 2.4.4 Link Purpose | "click here", "read more", empty link text |
 | 3.1.1 Language of Page | missing `lang` on `html` |
-| 3.3.2 Labels or Instructions | form control with no associated label |
-| 4.1.2 Name, Role, Value | unnamed `button`, untitled `iframe` |
+| 3.3.2 Labels or Instructions | form control with no label attached to it |
+| 4.1.2 Name, Role, Value | `button` with no name, `iframe` with no title |
 
-## What it deliberately does not check
+## What it does not check
 
-Colour contrast, focus visibility, reflow at 320 px, and anything else that
-needs a rendering engine. Those are real criteria and they are not guessable
-from markup. A confident wrong finding costs more reviewer trust than a missing
-one, so the tool says nothing rather than guessing.
+Colour contrast, focus visibility, and anything else that needs the page
+actually rendered in a browser. Those are real criteria and you cannot work them
+out from the markup, so the tool stays quiet instead of guessing.
 
-**A clean run is not a conformance claim.** It means the static checks found
-nothing, which is the floor, not the ceiling.
+**A clean run does not mean the page is accessible.** It means these checks
+found nothing, which is the floor and not the ceiling.
 
 ## Tests
 
@@ -84,13 +81,6 @@ nothing, which is the floor, not the ceiling.
 .venv/bin/python -m pytest tests/ -q
 ```
 
-Every check has both a failing and a passing case. The common bug in a linter
-is the false positive, because a tool that cries wolf gets switched off.
-
-## Background
-
-Built by Zainab Alsidiki. I spent seven years on a platform of 200+ production
-sites, developing to Section 508, which incorporates WCAG 2.0 Level AA, and
-running a security remediation cadence of 7 to 10 findings a month. The triage
-model here comes from that second half: the scanner output was never the
-bottleneck, deciding what mattered was.
+39 tests. Every check has one test that should fail and one that should pass. I
+care more about false alarms than missed findings here, because once a tool
+starts crying wolf people turn it off.

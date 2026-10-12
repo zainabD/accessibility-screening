@@ -25,11 +25,11 @@ def summarise(findings: list[Finding]) -> str:
 
 
 def to_terminal(findings: list[Finding], source: str) -> str:
-    out = [f"\na11y-triage  {source}", "=" * 72, summarise(findings), ""]
+    out = [f"\nwcag-triage  {source}", "=" * 72, summarise(findings), ""]
     if not findings:
         out.append(
-            "Note: static checks cannot see colour contrast, focus visibility, "
-            "or reflow.\nA clean result here is not a conformance claim."
+            "Note: these checks cannot see colour contrast or focus visibility.\n"
+            "A clean result here does not mean the page is accessible."
         )
         return "\n".join(out)
 
@@ -47,9 +47,9 @@ def to_terminal(findings: list[Finding], source: str) -> str:
 
     out.append("-" * 72)
     out.append(
-        "Fix blockers first: they stop a task completely rather than making it "
-        "harder.\nStatic checks cannot see colour contrast, focus visibility, "
-        "or reflow."
+        "Fix the blockers first. Those stop someone completely rather than just\n"
+        "slowing them down. These checks cannot see colour contrast or focus\n"
+        "visibility, so check those separately."
     )
     return "\n".join(out)
 

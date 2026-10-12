@@ -1,9 +1,8 @@
-"""The shape of a finding, and how findings get ranked.
+"""What a finding looks like, and how findings get sorted.
 
-Detection is the easy half. Most accessibility tools stop there and hand you
-200 undifferentiated violations, which is the same failure mode as a
-vulnerability scanner that reports every missing header at the same severity as
-an unauthenticated RCE. The useful half is deciding what to fix first.
+Finding the problems is the easy part. Most accessibility tools stop there and
+hand you a long flat list. What I actually needed to know was which ones to fix
+first, so that is what this sorts on.
 """
 
 from __future__ import annotations
@@ -13,10 +12,10 @@ from enum import IntEnum
 
 
 class Impact(IntEnum):
-    """How badly a violation blocks someone.
+    """How badly a problem blocks someone.
 
-    Ordered so that sorting puts the worst first. The scale is deliberately
-    about *user consequence*, not how easy the fix is.
+    Ordered worst first so sorting works. This is about what it does to the
+    person using the page, not how hard it is to fix.
     """
 
     BLOCKER = 4   # a user relying on assistive tech cannot complete the task
@@ -43,9 +42,9 @@ class Finding:
     impact: Impact
     message: str
     snippet: str
-    # How many identical instances of this problem were found on the page.
-    # One missing alt attribute is a bug; forty is a process failure, and the
-    # remediation advice is different.
+    # How many times this same problem shows up on the page. One missing alt
+    # is a bug. Forty means something is wrong with the process, and you fix
+    # that differently.
     count: int = 1
     remediation: str | None = None
     tags: list[str] = field(default_factory=list)

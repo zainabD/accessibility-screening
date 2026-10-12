@@ -28,8 +28,8 @@ def _load(target: str) -> tuple[str, str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="a11y-triage",
-        description="Audit a page for WCAG violations and rank them by user impact.",
+        prog="wcag-triage",
+        description="Check a page against WCAG rules and sort findings by how much they block someone.",
     )
     parser.add_argument("target", help="URL or path to an HTML file")
     parser.add_argument(
@@ -45,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
         default="blocker",
         help="exit non-zero if any finding is at least this severe (default: blocker)",
     )
-    parser.add_argument("--version", action="version", version=f"a11y-triage {__version__}")
+    parser.add_argument("--version", action="version", version=f"wcag-triage {__version__}")
     args = parser.parse_args(argv)
 
     html, label = _load(args.target)

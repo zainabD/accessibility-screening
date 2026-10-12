@@ -1,15 +1,15 @@
-"""Each check gets a failing case and a passing case.
+"""Every check gets a test that should fail and one that should pass.
 
-A test that only proves the check fires is half a test: the common bug in an
-accessibility linter is a false positive, because a tool that cries wolf gets
-switched off.
+Testing only that a check fires is half a test. The bug that actually hurts in
+a tool like this is a false alarm, because people stop trusting it and turn it
+off.
 """
 
 import pytest
 from bs4 import BeautifulSoup
 
-from a11y_triage import checks
-from a11y_triage.findings import Impact
+from wcag_triage import checks
+from wcag_triage.findings import Impact
 
 
 def soup(html):
