@@ -1,7 +1,7 @@
 [project]
 name = "accessibility-screening"
 version = "0.1.0"
-description = "Audit a page for WCAG violations and rank them by user impact."
+description = "Check a page against WCAG rules and sort findings by how much they block someone."
 requires-python = ">=3.9"
 dependencies = ["beautifulsoup4>=4.12", "httpx>=0.27", "anthropic>=0.40"]
 
