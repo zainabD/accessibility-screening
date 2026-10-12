@@ -1,8 +1,8 @@
 """What a finding looks like, and how findings get sorted.
 
 Finding the problems is the easy part. Most accessibility tools stop there and
-hand you a long flat list. What I actually needed to know was which ones to fix
-first, so that is what this sorts on.
+hand back a long flat list. The useful question is which ones to fix first, so
+that is what this sorts on.
 """
 
 from __future__ import annotations

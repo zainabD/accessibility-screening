@@ -2,7 +2,7 @@
 
 Every check maps to a specific success criterion, and only reports things you
 can tell from the markup. Anything that needs the page actually rendered, like
-colour contrast or focus visibility, is left out on purpose. I would rather miss
+colour contrast or focus visibility, is left out on purpose. Better to miss
 something than report a problem that is not there.
 """
 

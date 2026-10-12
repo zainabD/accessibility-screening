@@ -3,11 +3,6 @@
 Checks a web page against WCAG rules and sorts what it finds by how much each
 problem actually blocks someone.
 
-I built this because every accessibility tool I used gave me a long flat list.
-Two hundred findings, all looking equally urgent, and no help deciding where to
-start. I spent years remediating findings from scanners at work, and the list
-was never the hard part. Working out what mattered first was.
-
 ## Install
 
 ```bash
@@ -81,6 +76,6 @@ found nothing, which is the floor and not the ceiling.
 .venv/bin/python -m pytest tests/ -q
 ```
 
-39 tests. Every check has one test that should fail and one that should pass. I
-care more about false alarms than missed findings here, because once a tool
-starts crying wolf people turn it off.
+39 tests. Every check has one test that should fail and one that should pass.
+False alarms matter more than missed findings here, because once a tool starts
+crying wolf people turn it off.
