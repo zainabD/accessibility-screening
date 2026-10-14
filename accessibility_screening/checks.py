@@ -6,8 +6,6 @@ colour contrast or focus visibility, is left out on purpose. Better to miss
 something than report a problem that is not there.
 """
 
-from __future__ import annotations
-
 from bs4 import BeautifulSoup
 
 from .findings import Criterion, Finding, Impact

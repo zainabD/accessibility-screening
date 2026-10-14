@@ -5,8 +5,6 @@ is what to change in the markup. It is optional, so the tool still works
 without an API key.
 """
 
-from __future__ import annotations
-
 import os
 
 from .findings import Finding
@@ -32,7 +30,6 @@ Return one block per finding, in the same order, formatted as:
 ### <criterion number>
 <remediation>
 """
-
 
 def is_available() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY"))

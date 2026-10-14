@@ -1,7 +1,5 @@
 """Terminal and Markdown output."""
 
-from __future__ import annotations
-
 from .findings import Finding, Impact
 
 BADGE = {
