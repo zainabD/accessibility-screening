@@ -26,7 +26,7 @@ def to_terminal(findings: list[Finding], source: str) -> str:
     out = [f"\naccessibility-screening  {source}", "=" * 72, summarise(findings), ""]
     if not findings:
         out.append(
-            "Note: these checks cannot see colour contrast or focus visibility.\n"
+            "Note: these checks cannot see color contrast or focus visibility.\n"
             "A clean result here does not mean the page is accessible."
         )
         return "\n".join(out)
