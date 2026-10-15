@@ -53,10 +53,10 @@ def to_terminal(findings: list[Finding], source: str) -> str:
 
 
 def to_markdown(findings: list[Finding], source: str) -> str:
-    out = [f"# Accessibility triage: {source}", "", summarise(findings), ""]
+    out = [f"# Accessibility screening: {source}", "", summarise(findings), ""]
     for f in findings:
         out += [
-            f"## {BADGE[f.impact].strip()} — {f.criterion}",
+            f"## {BADGE[f.impact].strip()}: {f.criterion}",
             "",
             f"**Instances:** {f.count}",
             "",
