@@ -110,9 +110,38 @@ def check_inputs_have_labels(soup: BeautifulSoup) -> list[Finding]:
     ]
 
 
+# Classes that mean display:none. Deliberately does NOT include
+# visually-hidden or sr-only, see the docstring below.
+HIDDEN_CLASSES = {"d-none", "hidden", "is-hidden"}
+
+
+def _in_a11y_tree(tag) -> bool:
+    """False if this element is removed from the accessibility tree.
+
+    Checks the element and everything above it, because aria-hidden on a
+    wrapper hides all of its children too.
+
+    visually-hidden and sr-only are not treated as hidden here. Those hide the
+    element from sighted users but screen readers still announce it, so it is
+    still a real heading. People often add a visually-hidden heading to fix a
+    level skip, and skipping it would report a problem somebody already solved.
+    """
+    for el in [tag, *tag.parents]:
+        if el.get("aria-hidden") == "true":
+            return False
+        if el.has_attr("hidden"):
+            return False
+        if HIDDEN_CLASSES & {c.lower() for c in el.get("class", [])}:
+            return False
+    return True
+
+
 def check_heading_order(soup: BeautifulSoup) -> list[Finding]:
     """1.3.1 - heading levels should not skip, and a page needs one h1."""
-    headings = soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"])
+    headings = [
+        h for h in soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"])
+        if _in_a11y_tree(h)
+    ]
     findings: list[Finding] = []
 
     levels = [int(h.name[1]) for h in headings]

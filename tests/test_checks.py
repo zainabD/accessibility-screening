@@ -189,3 +189,46 @@ def test_clean_page_produces_no_findings():
     <label for="e">Your email</label><input id="e" type="email">
     <button>Send</button></main></body></html>"""
     assert checks.audit(html) == []
+
+
+# --- hidden headings and the accessibility tree ------------------------------
+
+def test_aria_hidden_heading_is_not_counted():
+    """aria-hidden removes the element from the tree, so it is not a real heading."""
+    html = '<h1>Title</h1><h2 aria-hidden="true">Ignored</h2><h2>Real</h2>'
+    assert checks.check_heading_order(soup(html)) == []
+
+
+def test_aria_hidden_on_a_wrapper_hides_the_heading_inside():
+    html = '<h1>Title</h1><div aria-hidden="true"><h4>Ignored</h4></div><h2>Real</h2>'
+    assert checks.check_heading_order(soup(html)) == []
+
+
+def test_hidden_attribute_heading_is_not_counted():
+    html = "<h1>Title</h1><h4 hidden>Ignored</h4><h2>Real</h2>"
+    assert checks.check_heading_order(soup(html)) == []
+
+
+@pytest.mark.parametrize("cls", ["d-none", "hidden", "is-hidden"])
+def test_display_none_classes_are_not_counted(cls):
+    html = f'<h1>Title</h1><h4 class="{cls}">Ignored</h4><h2>Real</h2>'
+    assert checks.check_heading_order(soup(html)) == []
+
+
+@pytest.mark.parametrize("cls", ["visually-hidden", "sr-only", "screen-reader-text"])
+def test_screen_reader_only_headings_still_count(cls):
+    """These are announced by screen readers, so they are real headings.
+
+    Here the visually-hidden h2 is what makes h1 -> h3 a valid sequence. If the
+    check skipped it, it would wrongly report a level skip.
+    """
+    html = f'<h1>Title</h1><h2 class="{cls}">Section</h2><h3>Sub</h3>'
+    assert checks.check_heading_order(soup(html)) == []
+
+
+def test_skip_is_still_caught_when_the_hidden_heading_was_the_bridge():
+    """Removing an aria-hidden bridge heading should expose the real skip."""
+    html = '<h1>Title</h1><h2 aria-hidden="true">Bridge</h2><h3>Sub</h3>'
+    found = checks.check_heading_order(soup(html))
+    assert any("skip" in f.message for f in found)
+
