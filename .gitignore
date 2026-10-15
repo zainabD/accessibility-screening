@@ -5,3 +5,7 @@ __pycache__/
 *.md.out
 reports/
 .DS_Store
+
+# generated reports
+report.md
+*.report.md
